@@ -69,8 +69,10 @@ Item {
                 value: TimerState.formatMs(TimerState.stopwatchDisplayMs)
 
                 RowLayout {
-                    Layout.alignment: Qt.AlignHCenter
+                    Layout.fillWidth: true
                     spacing: Tokens.spacing.small
+
+                    Item { Layout.fillWidth: true }
 
                     ActionButton {
                         text: TimerState.stopwatchRunning ? qsTr("Pause") : qsTr("Start")
@@ -86,6 +88,8 @@ Item {
                         accent: Colours.palette.m3secondary
                         onClicked: TimerState.resetStopwatch()
                     }
+
+                    Item { Layout.fillWidth: true }
                 }
             }
 
@@ -113,7 +117,7 @@ Item {
 
                     RowLayout {
                         Layout.alignment: Qt.AlignHCenter
-                        spacing: Tokens.spacing.normal
+                        spacing: Tokens.spacing.small
                         enabled: !TimerState.timerRunning
                         opacity: enabled ? 1 : 0.5
 
@@ -129,7 +133,7 @@ Item {
                         StyledText {
                             text: ":"
                             color: Colours.palette.m3tertiary
-                            font.pointSize: Tokens.font.size.extraLarge
+                            font.pointSize: Tokens.font.size.large
                             font.family: Tokens.font.family.clock
                             font.weight: 600
                         }
@@ -145,8 +149,10 @@ Item {
                     }
 
                     RowLayout {
-                        Layout.alignment: Qt.AlignHCenter
+                        Layout.fillWidth: true
                         spacing: Tokens.spacing.small
+
+                        Item { Layout.fillWidth: true }
 
                         ActionButton {
                             text: TimerState.timerRunning ? qsTr("Pause") : qsTr("Start")
@@ -162,6 +168,8 @@ Item {
                             accent: Colours.palette.m3secondary
                             onClicked: TimerState.resetTimer()
                         }
+
+                        Item { Layout.fillWidth: true }
                     }
 
                     StyledText {
@@ -203,16 +211,16 @@ Item {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: Tokens.padding.large
-            spacing: Tokens.spacing.normal
+            anchors.margins: Tokens.padding.normal
+            spacing: Tokens.spacing.small
 
             RowLayout {
                 Layout.fillWidth: true
                 spacing: Tokens.spacing.small
 
                 StyledRect {
-                    implicitWidth: 42
-                    implicitHeight: 42
+                    implicitWidth: 40
+                    implicitHeight: 40
                     radius: height / 2
                     color: card.accent
 
@@ -249,7 +257,7 @@ Item {
                 Layout.topMargin: Tokens.spacing.small
                 text: card.value
                 color: card.accent
-                font.pointSize: Tokens.font.size.extraLarge * 2
+                font.pointSize: Tokens.font.size.extraLarge * 1.62
                 font.family: Tokens.font.family.clock
                 font.weight: 700
             }
@@ -258,7 +266,7 @@ Item {
                 id: actionArea
 
                 Layout.fillWidth: true
-                Layout.topMargin: Tokens.spacing.small
+                Layout.topMargin: 0
                 spacing: Tokens.spacing.small
             }
         }
@@ -279,8 +287,8 @@ Item {
             return n < 10 ? "0" + n : "" + n;
         }
 
-        implicitWidth: 98
-        implicitHeight: 92
+        implicitWidth: 88
+        implicitHeight: 72
         radius: Tokens.rounding.large
         color: Colours.tPalette.m3surfaceContainer
 
@@ -295,8 +303,8 @@ Item {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: Tokens.padding.small
-            spacing: 0
+            anchors.margins: 4
+            spacing: -1
 
             StepArrow {
                 Layout.alignment: Qt.AlignHCenter
@@ -310,7 +318,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 text: stepper.two(stepper.value)
                 color: stepper.accent
-                font.pointSize: Tokens.font.size.extraLarge
+                font.pointSize: Tokens.font.size.large
                 font.family: Tokens.font.family.clock
                 font.weight: 650
             }
@@ -342,17 +350,17 @@ Item {
         property color accent
         property bool enabled: true
 
-        implicitWidth: 32
-        implicitHeight: 22
+        implicitWidth: 30
+        implicitHeight: 16
         radius: height / 2
         color: arrow.accent
-        opacity: arrow.enabled ? (hover.hovered ? 0.95 : 0.70) : 0.25
+        opacity: arrow.enabled ? (hover.hovered ? 0.95 : 0.72) : 0.25
 
         MaterialIcon {
             anchors.centerIn: parent
             text: arrow.icon
             color: Colours.palette.m3onTertiary
-            font.pointSize: Tokens.font.size.normal
+            font.pointSize: Tokens.font.size.small
         }
 
         HoverHandler {
@@ -378,7 +386,7 @@ Item {
         property bool enabled: true
 
         implicitWidth: label.implicitWidth + iconItem.implicitWidth + Tokens.padding.large * 2
-        implicitHeight: 38
+        implicitHeight: 36
         radius: height / 2
         color: primary ? accent : Colours.tPalette.m3surfaceContainer
         opacity: enabled ? (hover.hovered ? 0.95 : 1) : 0.45
