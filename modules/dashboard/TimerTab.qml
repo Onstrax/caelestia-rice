@@ -68,28 +68,41 @@ Item {
                 accent: Colours.palette.m3primary
                 value: TimerState.formatMs(TimerState.stopwatchDisplayMs)
 
-                RowLayout {
+                ColumnLayout {
                     Layout.fillWidth: true
                     spacing: Tokens.spacing.small
 
-                    Item { Layout.fillWidth: true }
-
-                    ActionButton {
-                        text: TimerState.stopwatchRunning ? qsTr("Pause") : qsTr("Start")
-                        icon: TimerState.stopwatchRunning ? "pause" : "play_arrow"
-                        accent: Colours.palette.m3primary
-                        primary: true
-                        onClicked: TimerState.toggleStopwatch()
+                    StyledText {
+                        Layout.alignment: Qt.AlignHCenter
+                        text: qsTr("Duration")
+                        opacity: 0
+                        font.pointSize: Tokens.font.size.small
+                        font.weight: 550
                     }
 
-                    ActionButton {
-                        text: qsTr("Reset")
-                        icon: "restart_alt"
-                        accent: Colours.palette.m3secondary
-                        onClicked: TimerState.resetStopwatch()
-                    }
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: Tokens.spacing.small
 
-                    Item { Layout.fillWidth: true }
+                        Item { Layout.fillWidth: true }
+
+                        ActionButton {
+                            text: TimerState.stopwatchRunning ? qsTr("Pause") : qsTr("Start")
+                            icon: TimerState.stopwatchRunning ? "pause" : "play_arrow"
+                            accent: Colours.palette.m3primary
+                            primary: true
+                            onClicked: TimerState.toggleStopwatch()
+                        }
+
+                        ActionButton {
+                            text: qsTr("Reset")
+                            icon: "restart_alt"
+                            accent: Colours.palette.m3secondary
+                            onClicked: TimerState.resetStopwatch()
+                        }
+
+                        Item { Layout.fillWidth: true }
+                    }
                 }
             }
 
@@ -225,6 +238,7 @@ Item {
 
             RowLayout {
                 Layout.fillWidth: true
+                Layout.preferredHeight: 48
                 spacing: Tokens.spacing.small
 
                 StyledRect {
@@ -243,6 +257,7 @@ Item {
 
                 ColumnLayout {
                     Layout.fillWidth: true
+                    Layout.alignment: Qt.AlignVCenter
                     spacing: 0
 
                     StyledText {
@@ -261,20 +276,25 @@ Item {
                 }
             }
 
-            StyledText {
-                Layout.alignment: Qt.AlignHCenter
-                Layout.topMargin: Tokens.spacing.small
-                text: card.value
-                color: card.accent
-                font.pointSize: Tokens.font.size.extraLarge * 1.62
-                font.family: Tokens.font.family.clock
-                font.weight: 700
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 112
+
+                StyledText {
+                    anchors.centerIn: parent
+                    text: card.value
+                    color: card.accent
+                    font.pointSize: Tokens.font.size.extraLarge * 1.62
+                    font.family: Tokens.font.family.clock
+                    font.weight: 700
+                }
             }
 
             ColumnLayout {
                 id: actionArea
 
                 Layout.fillWidth: true
+                Layout.preferredHeight: 86
                 Layout.topMargin: 0
                 spacing: Tokens.spacing.small
             }
@@ -312,7 +332,7 @@ Item {
 
         RowLayout {
             anchors.centerIn: parent
-            width: parent.width - 10
+            width: parent.width - 8
             height: parent.height - 10
             spacing: 0
 
