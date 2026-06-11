@@ -146,30 +146,25 @@ Item {
                             accent: Colours.palette.m3tertiary
                             onRequested: value => root.setDurationParts(root.durationMinutes, value)
                         }
-                    }
 
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: Tokens.spacing.small
+                        ColumnLayout {
+                            spacing: Tokens.spacing.small
 
-                        Item { Layout.fillWidth: true }
+                            ActionButton {
+                                text: TimerState.timerRunning ? qsTr("Pause") : qsTr("Start")
+                                icon: TimerState.timerRunning ? "pause" : "play_arrow"
+                                accent: TimerState.timerFinished ? Colours.palette.m3error : Colours.palette.m3tertiary
+                                primary: true
+                                onClicked: TimerState.toggleTimer()
+                            }
 
-                        ActionButton {
-                            text: TimerState.timerRunning ? qsTr("Pause") : qsTr("Start")
-                            icon: TimerState.timerRunning ? "pause" : "play_arrow"
-                            accent: TimerState.timerFinished ? Colours.palette.m3error : Colours.palette.m3tertiary
-                            primary: true
-                            onClicked: TimerState.toggleTimer()
+                            ActionButton {
+                                text: qsTr("Reset")
+                                icon: "restart_alt"
+                                accent: Colours.palette.m3secondary
+                                onClicked: TimerState.resetTimer()
+                            }
                         }
-
-                        ActionButton {
-                            text: qsTr("Reset")
-                            icon: "restart_alt"
-                            accent: Colours.palette.m3secondary
-                            onClicked: TimerState.resetTimer()
-                        }
-
-                        Item { Layout.fillWidth: true }
                     }
 
                     StyledText {
@@ -287,8 +282,8 @@ Item {
             return n < 10 ? "0" + n : "" + n;
         }
 
-        implicitWidth: 88
-        implicitHeight: 72
+        implicitWidth: 96
+        implicitHeight: 68
         radius: Tokens.rounding.large
         color: Colours.tPalette.m3surfaceContainer
 
@@ -301,42 +296,52 @@ Item {
             opacity: 0.22
         }
 
-        ColumnLayout {
+        RowLayout {
             anchors.fill: parent
-            anchors.margins: 4
-            spacing: -1
+            anchors.margins: 6
+            spacing: 4
 
-            StepArrow {
-                Layout.alignment: Qt.AlignHCenter
-                icon: "keyboard_arrow_up"
-                enabled: stepper.value < stepper.to
-                accent: stepper.accent
-                onClicked: stepper.requested(Math.min(stepper.to, stepper.value + 1))
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: -1
+
+                StyledText {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: stepper.two(stepper.value)
+                    color: stepper.accent
+                    font.pointSize: Tokens.font.size.large
+                    font.family: Tokens.font.family.clock
+                    font.weight: 650
+                }
+
+                StyledText {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: stepper.label
+                    color: Colours.palette.m3onSurfaceVariant
+                    font.pointSize: Tokens.font.size.small
+                    font.weight: 500
+                }
             }
 
-            StyledText {
-                Layout.alignment: Qt.AlignHCenter
-                text: stepper.two(stepper.value)
-                color: stepper.accent
-                font.pointSize: Tokens.font.size.large
-                font.family: Tokens.font.family.clock
-                font.weight: 650
-            }
+            ColumnLayout {
+                spacing: 3
+                Layout.alignment: Qt.AlignVCenter
 
-            StyledText {
-                Layout.alignment: Qt.AlignHCenter
-                text: stepper.label
-                color: Colours.palette.m3onSurfaceVariant
-                font.pointSize: Tokens.font.size.small
-                font.weight: 500
-            }
+                StepArrow {
+                    Layout.alignment: Qt.AlignHCenter
+                    icon: "keyboard_arrow_up"
+                    enabled: stepper.value < stepper.to
+                    accent: stepper.accent
+                    onClicked: stepper.requested(Math.min(stepper.to, stepper.value + 1))
+                }
 
-            StepArrow {
-                Layout.alignment: Qt.AlignHCenter
-                icon: "keyboard_arrow_down"
-                enabled: stepper.value > stepper.from
-                accent: stepper.accent
-                onClicked: stepper.requested(Math.max(stepper.from, stepper.value - 1))
+                StepArrow {
+                    Layout.alignment: Qt.AlignHCenter
+                    icon: "keyboard_arrow_down"
+                    enabled: stepper.value > stepper.from
+                    accent: stepper.accent
+                    onClicked: stepper.requested(Math.max(stepper.from, stepper.value - 1))
+                }
             }
         }
     }
@@ -350,8 +355,8 @@ Item {
         property color accent
         property bool enabled: true
 
-        implicitWidth: 30
-        implicitHeight: 16
+        implicitWidth: 24
+        implicitHeight: 20
         radius: height / 2
         color: arrow.accent
         opacity: arrow.enabled ? (hover.hovered ? 0.95 : 0.72) : 0.25
