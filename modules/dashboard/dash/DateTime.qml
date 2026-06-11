@@ -20,7 +20,7 @@ Item {
         spacing: 0
 
         StyledText {
-            Layout.bottomMargin: -(font.pointSize * 0.4)
+            Layout.bottomMargin: -(font.pointSize * 0.35)
             Layout.alignment: Qt.AlignHCenter
             text: Time.hourStr
             color: Colours.palette.m3secondary
@@ -31,18 +31,37 @@ Item {
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            text: "•••"
+            text: "••"
             color: Colours.palette.m3primary
-            font.pointSize: Tokens.font.size.extraLarge * 0.9
+            font.pointSize: Tokens.font.size.extraLarge * 0.75
             font.family: Tokens.font.family.clock
         }
 
         StyledText {
-            Layout.topMargin: -(font.pointSize * 0.4)
+            Layout.topMargin: -(font.pointSize * 0.35)
+            Layout.bottomMargin: -(font.pointSize * 0.25)
             Layout.alignment: Qt.AlignHCenter
             text: Time.minuteStr
             color: Colours.palette.m3secondary
             font.pointSize: Tokens.font.size.extraLarge
+            font.family: Tokens.font.family.clock
+            font.weight: 600
+        }
+
+        StyledText {
+            Layout.alignment: Qt.AlignHCenter
+            text: "•"
+            color: Colours.palette.m3primary
+            font.pointSize: Tokens.font.size.large
+            font.family: Tokens.font.family.clock
+        }
+
+        StyledText {
+            Layout.topMargin: -(font.pointSize * 0.25)
+            Layout.alignment: Qt.AlignHCenter
+            text: Time.format("ss")
+            color: Colours.palette.m3tertiary
+            font.pointSize: Tokens.font.size.large
             font.family: Tokens.font.family.clock
             font.weight: 600
         }

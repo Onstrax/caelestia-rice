@@ -163,6 +163,9 @@ CustomMouseArea {
 
                     required property var model
 
+                    readonly property bool isHoliday: ColombiaHolidays.isHoliday(dayItem.model.date)
+                    readonly property string holidayLabel: ColombiaHolidays.labelFor(dayItem.model.date)
+
                     implicitWidth: implicitHeight
                     implicitHeight: text.implicitHeight + Tokens.padding.small * 2
 
@@ -174,7 +177,10 @@ CustomMouseArea {
                         horizontalAlignment: Text.AlignHCenter
                         text: grid.locale.toString(dayItem.model.day)
                         color: {
-                            const dayOfWeek = dayItem.model.date.getUTCDay();
+                            if (dayItem.isHoliday)
+                                return Colours.palette.m3tertiary;
+
+                            const dayOfWeek = dayItem.model.date.getDay();
                             if (dayOfWeek === 0 || dayOfWeek === 6)
                                 return Colours.palette.m3secondary;
 
@@ -182,7 +188,27 @@ CustomMouseArea {
                         }
                         opacity: dayItem.model.today || dayItem.model.month === grid.month ? 1 : 0.4
                         font.pointSize: Tokens.font.size.normal
-                        font.weight: 500
+                        font.weight: dayItem.isHoliday ? 700 : 500
+
+                        ToolTip.visible: dayItem.isHoliday && hoverHandler.hovered
+                        ToolTip.delay: 350
+                        ToolTip.text: dayItem.holidayLabel
+                    }
+
+                    Rectangle {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.top: text.bottom
+                        anchors.topMargin: 1
+                        width: 4
+                        height: 4
+                        radius: 2
+                        visible: dayItem.isHoliday
+                        color: Colours.palette.m3tertiary
+                        opacity: dayItem.model.month === grid.month ? 1 : 0.35
+                    }
+
+                    HoverHandler {
+                        id: hoverHandler
                     }
                 }
             }
