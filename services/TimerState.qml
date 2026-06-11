@@ -25,6 +25,7 @@ Singleton {
     property int timerBaseRemainingSeconds: timerDurationSeconds
     property bool timerRunning: false
     property bool timerFinished: false
+    property bool timerNotified: false
     property double timerStartedAt: 0
 
     readonly property int timerDisplaySeconds: root.tick >= 0
@@ -47,11 +48,20 @@ Singleton {
                     root.timerRemainingSeconds = 0;
                     root.timerRunning = false;
                     root.timerFinished = true;
+                    root.notifyTimerFinished();
                 } else {
                     root.timerRemainingSeconds = remaining;
                 }
             }
         }
+    }
+
+    function notifyTimerFinished(): void {
+        if (root.timerNotified)
+            return;
+
+        root.timerNotified = true;
+        Quickshell.execDetached(["bash", Quickshell.shellPath("scripts/timer_finished.sh")]);
     }
 
     function startStopwatch(): void {
@@ -88,6 +98,7 @@ Singleton {
         const next = Math.max(1, Math.min(seconds, 24 * 60 * 60));
         root.timerDurationSeconds = next;
         root.timerFinished = false;
+        root.timerNotified = false;
 
         if (!root.timerRunning)
             root.timerRemainingSeconds = next;
@@ -114,6 +125,7 @@ Singleton {
         root.timerStartedAt = Date.now();
         root.timerRunning = true;
         root.timerFinished = false;
+        root.timerNotified = false;
         root.tick++;
     }
 
@@ -136,6 +148,7 @@ Singleton {
     function resetTimer(): void {
         root.timerRunning = false;
         root.timerFinished = false;
+        root.timerNotified = false;
         root.timerRemainingSeconds = root.timerDurationSeconds;
         root.timerBaseRemainingSeconds = root.timerDurationSeconds;
         root.timerStartedAt = 0;
