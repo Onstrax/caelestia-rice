@@ -10,6 +10,13 @@ Item {
     implicitWidth: 840
     implicitHeight: layout.implicitHeight
 
+    readonly property int durationMinutes: Math.floor(TimerState.timerDurationSeconds / 60)
+    readonly property int durationSeconds: TimerState.timerDurationSeconds % 60
+
+    function setDurationParts(minutes: int, seconds: int): void {
+        TimerState.setTimerDuration(Math.max(1, minutes * 60 + seconds));
+    }
+
     ColumnLayout {
         id: layout
 
@@ -32,13 +39,14 @@ Item {
                 StyledText {
                     text: qsTr("Timer")
                     font.pointSize: Tokens.font.size.extraLarge
-                    font.weight: 800
+                    font.weight: 700
                     color: Colours.palette.m3onSurface
                 }
 
                 StyledText {
                     text: qsTr("Stopwatch and countdown tools")
                     font.pointSize: Tokens.font.size.small
+                    font.weight: 500
                     color: Colours.palette.m3onSurfaceVariant
                 }
             }
@@ -97,61 +105,42 @@ Item {
 
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: qsTr("Duration: ") + TimerState.formatSeconds(TimerState.timerDurationSeconds)
+                        text: qsTr("Duration")
                         color: Colours.palette.m3onSurfaceVariant
                         font.pointSize: Tokens.font.size.small
-                        font.weight: 600
+                        font.weight: 550
                     }
 
                     RowLayout {
                         Layout.alignment: Qt.AlignHCenter
-                        spacing: Tokens.spacing.small
+                        spacing: Tokens.spacing.normal
+                        enabled: !TimerState.timerRunning
+                        opacity: enabled ? 1 : 0.5
 
-                        SmallButton {
-                            text: "-5m"
-                            enabled: !TimerState.timerRunning
-                            onClicked: TimerState.addTimerMinutes(-5)
+                        NumberStepper {
+                            label: qsTr("min")
+                            value: root.durationMinutes
+                            from: 0
+                            to: 180
+                            accent: Colours.palette.m3tertiary
+                            onRequested: value => root.setDurationParts(value, root.durationSeconds)
                         }
 
-                        SmallButton {
-                            text: "-1m"
-                            enabled: !TimerState.timerRunning
-                            onClicked: TimerState.addTimerMinutes(-1)
+                        StyledText {
+                            text: ":"
+                            color: Colours.palette.m3tertiary
+                            font.pointSize: Tokens.font.size.extraLarge
+                            font.family: Tokens.font.family.clock
+                            font.weight: 600
                         }
 
-                        SmallButton {
-                            text: "+1m"
-                            enabled: !TimerState.timerRunning
-                            onClicked: TimerState.addTimerMinutes(1)
-                        }
-
-                        SmallButton {
-                            text: "+5m"
-                            enabled: !TimerState.timerRunning
-                            onClicked: TimerState.addTimerMinutes(5)
-                        }
-                    }
-
-                    RowLayout {
-                        Layout.alignment: Qt.AlignHCenter
-                        spacing: Tokens.spacing.small
-
-                        SmallButton {
-                            text: "5m"
-                            enabled: !TimerState.timerRunning
-                            onClicked: TimerState.setPresetMinutes(5)
-                        }
-
-                        SmallButton {
-                            text: "25m"
-                            enabled: !TimerState.timerRunning
-                            onClicked: TimerState.setPresetMinutes(25)
-                        }
-
-                        SmallButton {
-                            text: "50m"
-                            enabled: !TimerState.timerRunning
-                            onClicked: TimerState.setPresetMinutes(50)
+                        NumberStepper {
+                            label: qsTr("sec")
+                            value: root.durationSeconds
+                            from: 0
+                            to: 59
+                            accent: Colours.palette.m3tertiary
+                            onRequested: value => root.setDurationParts(root.durationMinutes, value)
                         }
                     }
 
@@ -180,7 +169,7 @@ Item {
                         visible: TimerState.timerFinished
                         text: qsTr("Time is up")
                         color: Colours.palette.m3error
-                        font.weight: 800
+                        font.weight: 650
                     }
                 }
             }
@@ -243,14 +232,14 @@ Item {
                         text: card.title
                         color: Colours.palette.m3onSurface
                         font.pointSize: Tokens.font.size.large
-                        font.weight: 800
+                        font.weight: 700
                     }
 
                     StyledText {
                         text: card.subtitle
                         color: card.accent
                         font.pointSize: Tokens.font.size.small
-                        font.weight: 700
+                        font.weight: 600
                     }
                 }
             }
@@ -262,7 +251,7 @@ Item {
                 color: card.accent
                 font.pointSize: Tokens.font.size.extraLarge * 2
                 font.family: Tokens.font.family.clock
-                font.weight: 800
+                font.weight: 700
             }
 
             ColumnLayout {
@@ -272,6 +261,108 @@ Item {
                 Layout.topMargin: Tokens.spacing.small
                 spacing: Tokens.spacing.small
             }
+        }
+    }
+
+    component NumberStepper: StyledRect {
+        id: stepper
+
+        signal requested(int value)
+
+        property string label
+        property int value: 0
+        property int from: 0
+        property int to: 59
+        property color accent
+
+        function two(n: int): string {
+            return n < 10 ? "0" + n : "" + n;
+        }
+
+        implicitWidth: 98
+        implicitHeight: 92
+        radius: Tokens.rounding.large
+        color: Colours.tPalette.m3surfaceContainer
+
+        Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            color: "transparent"
+            border.width: 1
+            border.color: stepper.accent
+            opacity: 0.22
+        }
+
+        ColumnLayout {
+            anchors.fill: parent
+            anchors.margins: Tokens.padding.small
+            spacing: 0
+
+            StepArrow {
+                Layout.alignment: Qt.AlignHCenter
+                icon: "keyboard_arrow_up"
+                enabled: stepper.value < stepper.to
+                accent: stepper.accent
+                onClicked: stepper.requested(Math.min(stepper.to, stepper.value + 1))
+            }
+
+            StyledText {
+                Layout.alignment: Qt.AlignHCenter
+                text: stepper.two(stepper.value)
+                color: stepper.accent
+                font.pointSize: Tokens.font.size.extraLarge
+                font.family: Tokens.font.family.clock
+                font.weight: 650
+            }
+
+            StyledText {
+                Layout.alignment: Qt.AlignHCenter
+                text: stepper.label
+                color: Colours.palette.m3onSurfaceVariant
+                font.pointSize: Tokens.font.size.small
+                font.weight: 500
+            }
+
+            StepArrow {
+                Layout.alignment: Qt.AlignHCenter
+                icon: "keyboard_arrow_down"
+                enabled: stepper.value > stepper.from
+                accent: stepper.accent
+                onClicked: stepper.requested(Math.max(stepper.from, stepper.value - 1))
+            }
+        }
+    }
+
+    component StepArrow: StyledRect {
+        id: arrow
+
+        signal clicked
+
+        property string icon
+        property color accent
+        property bool enabled: true
+
+        implicitWidth: 32
+        implicitHeight: 22
+        radius: height / 2
+        color: arrow.accent
+        opacity: arrow.enabled ? (hover.hovered ? 0.95 : 0.70) : 0.25
+
+        MaterialIcon {
+            anchors.centerIn: parent
+            text: arrow.icon
+            color: Colours.palette.m3onTertiary
+            font.pointSize: Tokens.font.size.normal
+        }
+
+        HoverHandler {
+            id: hover
+            enabled: arrow.enabled
+        }
+
+        TapHandler {
+            enabled: arrow.enabled
+            onTapped: arrow.clicked()
         }
     }
 
@@ -318,53 +409,9 @@ Item {
 
                 text: button.text
                 color: button.primary ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
-                font.weight: 800
+                font.weight: 650
                 font.pointSize: Tokens.font.size.small
             }
-        }
-
-        HoverHandler {
-            id: hover
-            enabled: button.enabled
-        }
-
-        TapHandler {
-            enabled: button.enabled
-            onTapped: button.clicked()
-        }
-    }
-
-    component SmallButton: StyledRect {
-        id: button
-
-        signal clicked
-
-        property string text
-        property bool enabled: true
-
-        implicitWidth: label.implicitWidth + Tokens.padding.normal * 2
-        implicitHeight: 30
-        radius: height / 2
-        color: Colours.tPalette.m3surfaceContainer
-        opacity: enabled ? (hover.hovered ? 1 : 0.82) : 0.35
-
-        Rectangle {
-            anchors.fill: parent
-            radius: parent.radius
-            color: "transparent"
-            border.width: 1
-            border.color: Colours.palette.m3outline
-            opacity: 0.35
-        }
-
-        StyledText {
-            id: label
-
-            anchors.centerIn: parent
-            text: button.text
-            color: Colours.palette.m3onSurface
-            font.pointSize: Tokens.font.size.small
-            font.weight: 700
         }
 
         HoverHandler {
