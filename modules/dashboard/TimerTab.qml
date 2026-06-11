@@ -116,39 +116,49 @@ Item {
                     }
 
                     RowLayout {
-                        Layout.alignment: Qt.AlignHCenter
+                        Layout.fillWidth: true
                         spacing: Tokens.spacing.small
-                        enabled: !TimerState.timerRunning
-                        opacity: enabled ? 1 : 0.5
 
-                        NumberStepper {
-                            label: qsTr("min")
-                            value: root.durationMinutes
-                            from: 0
-                            to: 180
-                            accent: Colours.palette.m3tertiary
-                            onRequested: value => root.setDurationParts(value, root.durationSeconds)
+                        Item {
+                            Layout.fillWidth: true
                         }
 
-                        StyledText {
-                            text: ":"
-                            color: Colours.palette.m3tertiary
-                            font.pointSize: Tokens.font.size.large
-                            font.family: Tokens.font.family.clock
-                            font.weight: 600
-                        }
+                        RowLayout {
+                            spacing: Tokens.spacing.small
+                            enabled: !TimerState.timerRunning
+                            opacity: enabled ? 1 : 0.5
+                            Layout.alignment: Qt.AlignVCenter
 
-                        NumberStepper {
-                            label: qsTr("sec")
-                            value: root.durationSeconds
-                            from: 0
-                            to: 59
-                            accent: Colours.palette.m3tertiary
-                            onRequested: value => root.setDurationParts(root.durationMinutes, value)
+                            NumberStepper {
+                                label: qsTr("min")
+                                value: root.durationMinutes
+                                from: 0
+                                to: 180
+                                accent: Colours.palette.m3tertiary
+                                onRequested: value => root.setDurationParts(value, root.durationSeconds)
+                            }
+
+                            StyledText {
+                                text: ":"
+                                color: Colours.palette.m3tertiary
+                                font.pointSize: Tokens.font.size.large
+                                font.family: Tokens.font.family.clock
+                                font.weight: 600
+                            }
+
+                            NumberStepper {
+                                label: qsTr("sec")
+                                value: root.durationSeconds
+                                from: 0
+                                to: 59
+                                accent: Colours.palette.m3tertiary
+                                onRequested: value => root.setDurationParts(root.durationMinutes, value)
+                            }
                         }
 
                         ColumnLayout {
                             spacing: Tokens.spacing.small
+                            Layout.alignment: Qt.AlignVCenter
 
                             ActionButton {
                                 text: TimerState.timerRunning ? qsTr("Pause") : qsTr("Start")
@@ -164,6 +174,10 @@ Item {
                                 accent: Colours.palette.m3secondary
                                 onClicked: TimerState.resetTimer()
                             }
+                        }
+
+                        Item {
+                            Layout.fillWidth: true
                         }
                     }
 
@@ -297,12 +311,14 @@ Item {
         }
 
         RowLayout {
-            anchors.fill: parent
-            anchors.margins: 6
-            spacing: 4
+            anchors.centerIn: parent
+            width: parent.width - 10
+            height: parent.height - 10
+            spacing: 0
 
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
                 spacing: -1
 
                 StyledText {
@@ -324,7 +340,7 @@ Item {
             }
 
             ColumnLayout {
-                spacing: 3
+                spacing: 2
                 Layout.alignment: Qt.AlignVCenter
 
                 StepArrow {
@@ -355,7 +371,7 @@ Item {
         property color accent
         property bool enabled: true
 
-        implicitWidth: 24
+        implicitWidth: 22
         implicitHeight: 20
         radius: height / 2
         color: arrow.accent
