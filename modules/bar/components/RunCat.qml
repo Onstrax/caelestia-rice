@@ -21,7 +21,7 @@ Item {
     property int frame: 0
 
     implicitWidth: Tokens.sizes.bar.innerWidth
-    implicitHeight: Math.max(Tokens.sizes.bar.innerWidth, cat.implicitHeight + Tokens.padding.large)
+    implicitHeight: Math.max(Tokens.sizes.bar.innerWidth, 40)
 
     Component.onCompleted: SystemUsage.refCount++
     Component.onDestruction: SystemUsage.refCount--
@@ -37,13 +37,15 @@ Item {
         id: cat
 
         anchors.centerIn: parent
+        scale: 1.45
+        transformOrigin: Item.Center
         text: root.frames[root.frame]
 
         // Blanco para contrastar con el fondo oscuro de la barra.
         color: Colours.palette.m3onSurface
 
         font.family: "runcat"
-        font.pointSize: Tokens.font.size.extraLarge * 1.85
+        font.pixelSize: 28
         font.weight: 400
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter

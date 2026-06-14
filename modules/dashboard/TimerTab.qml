@@ -74,7 +74,7 @@ Item {
 
                 Item {
                     Layout.fillWidth: true
-                    Layout.preferredHeight: 58
+                    Layout.preferredHeight: 90
 
                     RowLayout {
                         anchors.centerIn: parent
@@ -111,6 +111,7 @@ Item {
 
                 ColumnLayout {
                     Layout.fillWidth: true
+                    Layout.preferredHeight: 90
                     spacing: Tokens.spacing.extraSmall
 
                     StyledText {
@@ -122,7 +123,7 @@ Item {
 
                     Item {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 94
+                        Layout.preferredHeight: 72
 
                         RowLayout {
                             anchors.centerIn: parent
@@ -130,6 +131,7 @@ Item {
 
                             RowLayout {
                                 spacing: Tokens.spacing.small
+                                Layout.alignment: Qt.AlignVCenter
                                 enabled: !TimerState.timerRunning
                                 opacity: enabled ? 1 : 0.5
 
@@ -144,6 +146,7 @@ Item {
                                 }
 
                                 StyledText {
+                                    Layout.alignment: Qt.AlignVCenter
                                     text: ":"
                                     color: Colours.palette.m3tertiary
                                     font.pointSize: 24
@@ -163,8 +166,8 @@ Item {
                             }
 
                             ColumnLayout {
-                                spacing: Tokens.spacing.small
                                 Layout.alignment: Qt.AlignVCenter
+                                spacing: Tokens.spacing.small
 
                                 PillButton {
                                     label: TimerState.timerRunning ? qsTr("Pause") : qsTr("Start")
@@ -220,6 +223,7 @@ Item {
 
             RowLayout {
                 Layout.fillWidth: true
+                Layout.preferredHeight: 48
                 spacing: Tokens.spacing.small
 
                 StyledRect {
@@ -257,7 +261,7 @@ Item {
 
             Item {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 110
+                Layout.preferredHeight: 116
 
                 StyledText {
                     anchors.centerIn: parent
@@ -273,7 +277,7 @@ Item {
                 id: contentArea
 
                 Layout.fillWidth: true
-                Layout.fillHeight: true
+                Layout.preferredHeight: 96
                 spacing: Tokens.spacing.small
             }
         }
@@ -295,7 +299,7 @@ Item {
         }
 
         implicitWidth: 98
-        implicitHeight: 66
+        implicitHeight: 80
         radius: Tokens.rounding.large
         color: Qt.alpha(stepper.accent, 0.12)
         opacity: enabled ? 1 : 0.45
