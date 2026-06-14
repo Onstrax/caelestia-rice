@@ -18,7 +18,7 @@ Item {
     // Similar a runcat-text: mínimo lento, máximo rápido.
     readonly property int fpsLow: 6
     readonly property int fpsHigh: 90
-    readonly property real fps: fpsLow + (fpsHigh - fpsLow) * cpu
+    readonly property real fps: fpsLow + (fpsHigh - fpsLow) * cpu * 0.5
     readonly property int frameDuration: Math.max(16, Math.round(1000 / fps))
 
     readonly property color stateColour: cpuPercent >= 90
@@ -47,7 +47,7 @@ Item {
 
         anchors.centerIn: parent
         text: root.frames[root.frame]
-        color: root.stateColour
+        color: Colours.palette.m3onSurface
         font.family: "runcat"
         font.pointSize: Tokens.font.size.extraLarge
         font.weight: 400
