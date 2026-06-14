@@ -37,6 +37,12 @@ Item {
                 enabled: Config.dashboard.showPerformance
             },
             {
+                component: timerComponent,
+                iconName: "timer",
+                text: qsTr("Timer"),
+                enabled: true
+            },
+            {
                 component: weatherComponent,
                 iconName: "cloud",
                 text: qsTr("Weather"),
@@ -175,6 +181,12 @@ Item {
                 id: performanceComponent
 
                 Performance {}
+            }
+
+            Component {
+                id: timerComponent
+
+                TimerTab {}
             }
 
             Component {
