@@ -72,9 +72,9 @@ Item {
                 anchors.centerIn: parent
                 text: Time.format("ss")
                 color: Colours.palette.m3onTertiary
-                font.pointSize: Tokens.font.size.small
+                font.pointSize: Tokens.font.size.normal
                 font.family: Tokens.font.family.clock
-                font.weight: 750
+                font.weight: 450
             }
         }
 

@@ -239,6 +239,7 @@ Item {
             RowLayout {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 48
+                Layout.leftMargin: Tokens.spacing.normal
                 spacing: Tokens.spacing.small
 
                 StyledRect {
@@ -332,12 +333,14 @@ Item {
 
         RowLayout {
             anchors.centerIn: parent
-            width: parent.width - 8
-            height: parent.height - 10
-            spacing: 0
+            // width: parent.width - 8
+            // height: parent.height - 10
+            // spacing: 0
+            spacing: Tokens.spacing.small
 
             ColumnLayout {
-                Layout.fillWidth: true
+                // Layout.fillWidth: true
+                Layout.fillWidth: false
                 Layout.alignment: Qt.AlignVCenter
                 spacing: -1
 
