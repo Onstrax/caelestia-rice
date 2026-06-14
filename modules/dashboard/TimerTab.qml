@@ -32,8 +32,8 @@ Item {
             MaterialIcon {
                 text: "timer"
                 color: Colours.palette.m3primary
-                fontStyle: Tokens.font.icon.large
                 fill: 1
+                fontStyle: Tokens.font.icon.large
             }
 
             ColumnLayout {
@@ -72,23 +72,28 @@ Item {
                 accent: Colours.palette.m3primary
                 timeText: TimerState.formatMs(TimerState.stopwatchDisplayMs)
 
-                RowLayout {
-                    Layout.alignment: Qt.AlignHCenter
-                    spacing: Tokens.spacing.small
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 58
 
-                    PillButton {
-                        label: TimerState.stopwatchRunning ? qsTr("Pause") : qsTr("Start")
-                        iconName: TimerState.stopwatchRunning ? "pause" : "play_arrow"
-                        accent: Colours.palette.m3primary
-                        primary: true
-                        onClicked: TimerState.toggleStopwatch()
-                    }
+                    RowLayout {
+                        anchors.centerIn: parent
+                        spacing: Tokens.spacing.small
 
-                    PillButton {
-                        label: qsTr("Reset")
-                        iconName: "restart_alt"
-                        accent: Colours.palette.m3secondary
-                        onClicked: TimerState.resetStopwatch()
+                        PillButton {
+                            label: TimerState.stopwatchRunning ? qsTr("Pause") : qsTr("Start")
+                            iconName: TimerState.stopwatchRunning ? "pause" : "play_arrow"
+                            accent: Colours.palette.m3primary
+                            primary: true
+                            onClicked: TimerState.toggleStopwatch()
+                        }
+
+                        PillButton {
+                            label: qsTr("Reset")
+                            iconName: "restart_alt"
+                            accent: Colours.palette.m3secondary
+                            onClicked: TimerState.resetStopwatch()
+                        }
                     }
                 }
             }
@@ -106,63 +111,76 @@ Item {
 
                 ColumnLayout {
                     Layout.fillWidth: true
-                    spacing: Tokens.spacing.small
+                    spacing: Tokens.spacing.extraSmall
 
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
                         text: qsTr("Duration")
                         color: Colours.palette.m3onSurfaceVariant
-                        font: Tokens.font.body.small
+                        font: Tokens.font.body.medium
                     }
 
-                    RowLayout {
-                        Layout.alignment: Qt.AlignHCenter
-                        spacing: Tokens.spacing.small
+                    Item {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 94
 
-                        NumberStepper {
-                            label: qsTr("min")
-                            value: root.durationMinutes
-                            from: 0
-                            to: 180
-                            accent: Colours.palette.m3tertiary
-                            enabled: !TimerState.timerRunning
-                            onRequested: value => root.setDurationParts(value, root.durationSeconds)
-                        }
+                        RowLayout {
+                            anchors.centerIn: parent
+                            spacing: Tokens.spacing.normal
 
-                        StyledText {
-                            text: ":"
-                            color: Colours.palette.m3tertiary
-                            font: Tokens.font.body.builders.large.weight(Font.Bold).build()
-                        }
+                            RowLayout {
+                                spacing: Tokens.spacing.small
+                                enabled: !TimerState.timerRunning
+                                opacity: enabled ? 1 : 0.5
 
-                        NumberStepper {
-                            label: qsTr("sec")
-                            value: root.durationSeconds
-                            from: 0
-                            to: 59
-                            accent: Colours.palette.m3tertiary
-                            enabled: !TimerState.timerRunning
-                            onRequested: value => root.setDurationParts(root.durationMinutes, value)
-                        }
-                    }
+                                NumberStepper {
+                                    label: qsTr("min")
+                                    value: root.durationMinutes
+                                    from: 0
+                                    to: 180
+                                    accent: Colours.palette.m3tertiary
+                                    enabled: !TimerState.timerRunning
+                                    onRequested: value => root.setDurationParts(value, root.durationSeconds)
+                                }
 
-                    RowLayout {
-                        Layout.alignment: Qt.AlignHCenter
-                        spacing: Tokens.spacing.small
+                                StyledText {
+                                    text: ":"
+                                    color: Colours.palette.m3tertiary
+                                    font.pointSize: 24
+                                    font.family: Tokens.font.family.clock
+                                    font.weight: 700
+                                }
 
-                        PillButton {
-                            label: TimerState.timerRunning ? qsTr("Pause") : qsTr("Start")
-                            iconName: TimerState.timerRunning ? "pause" : "play_arrow"
-                            accent: TimerState.timerFinished ? Colours.palette.m3error : Colours.palette.m3tertiary
-                            primary: true
-                            onClicked: TimerState.toggleTimer()
-                        }
+                                NumberStepper {
+                                    label: qsTr("sec")
+                                    value: root.durationSeconds
+                                    from: 0
+                                    to: 59
+                                    accent: Colours.palette.m3tertiary
+                                    enabled: !TimerState.timerRunning
+                                    onRequested: value => root.setDurationParts(root.durationMinutes, value)
+                                }
+                            }
 
-                        PillButton {
-                            label: qsTr("Reset")
-                            iconName: "restart_alt"
-                            accent: Colours.palette.m3secondary
-                            onClicked: TimerState.resetTimer()
+                            ColumnLayout {
+                                spacing: Tokens.spacing.small
+                                Layout.alignment: Qt.AlignVCenter
+
+                                PillButton {
+                                    label: TimerState.timerRunning ? qsTr("Pause") : qsTr("Start")
+                                    iconName: TimerState.timerRunning ? "pause" : "play_arrow"
+                                    accent: TimerState.timerFinished ? Colours.palette.m3error : Colours.palette.m3tertiary
+                                    primary: true
+                                    onClicked: TimerState.toggleTimer()
+                                }
+
+                                PillButton {
+                                    label: qsTr("Reset")
+                                    iconName: "restart_alt"
+                                    accent: Colours.palette.m3secondary
+                                    onClicked: TimerState.resetTimer()
+                                }
+                            }
                         }
                     }
 
@@ -192,14 +210,13 @@ Item {
         Layout.preferredHeight: 310
         radius: Tokens.rounding.xl
         color: Colours.tPalette.m3surfaceContainer
-
         border.width: 1
         border.color: Qt.alpha(card.accent, 0.22)
 
         ColumnLayout {
             anchors.fill: parent
             anchors.margins: Tokens.padding.large
-            spacing: Tokens.spacing.normal
+            spacing: Tokens.spacing.small
 
             RowLayout {
                 Layout.fillWidth: true
@@ -240,13 +257,15 @@ Item {
 
             Item {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 88
+                Layout.preferredHeight: 110
 
                 StyledText {
                     anchors.centerIn: parent
                     text: card.timeText
                     color: card.accent
-                    font: Tokens.font.body.builders.extraLarge.weight(Font.Bold).build()
+                    font.pointSize: 42
+                    font.family: Tokens.font.family.clock
+                    font.weight: 700
                 }
             }
 
@@ -275,12 +294,11 @@ Item {
             return n < 10 ? "0" + n : "" + n;
         }
 
-        implicitWidth: 88
-        implicitHeight: 62
+        implicitWidth: 98
+        implicitHeight: 66
         radius: Tokens.rounding.large
         color: Qt.alpha(stepper.accent, 0.12)
         opacity: enabled ? 1 : 0.45
-
         border.width: 1
         border.color: Qt.alpha(stepper.accent, 0.30)
 
@@ -295,7 +313,9 @@ Item {
                     Layout.alignment: Qt.AlignHCenter
                     text: stepper.two(stepper.value)
                     color: stepper.accent
-                    font: Tokens.font.body.builders.large.weight(Font.Bold).build()
+                    font.pointSize: 22
+                    font.family: Tokens.font.family.clock
+                    font.weight: 700
                 }
 
                 StyledText {
@@ -370,7 +390,6 @@ Item {
         implicitHeight: 38
         radius: Tokens.rounding.full
         color: primary ? button.accent : "transparent"
-
         border.width: primary ? 0 : 1
         border.color: Qt.alpha(button.accent, hover.hovered ? 0.75 : 0.42)
 

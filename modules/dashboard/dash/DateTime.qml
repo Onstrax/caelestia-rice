@@ -20,41 +20,54 @@ Item {
         spacing: 0
 
         StyledText {
-            Layout.bottomMargin: -(font.pointSize * 0.4)
+            Layout.bottomMargin: -(font.pointSize * 0.38)
             Layout.alignment: Qt.AlignHCenter
             text: Time.hourStr
             color: Colours.palette.m3primary
-            font: Tokens.font.clock.size(28).weight(Font.DemiBold).build()
+            font.pointSize: 30
+            font.family: Tokens.font.family.clock
+            font.weight: 650
         }
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            text: "•••"
+            text: "••"
             color: Colours.palette.m3tertiary
-            font: Tokens.font.clock.size(28 * 0.9).build()
+            font.pointSize: 22
+            font.family: Tokens.font.family.clock
+            font.weight: 650
         }
 
         StyledText {
-            Layout.topMargin: -(font.pointSize * 0.4)
+            Layout.topMargin: -(font.pointSize * 0.38)
+            Layout.bottomMargin: -(font.pointSize * 0.24)
             Layout.alignment: Qt.AlignHCenter
             text: Time.minuteStr
             color: Colours.palette.m3secondary
-            font: Tokens.font.clock.size(28).weight(Font.DemiBold).build()
+            font.pointSize: 30
+            font.family: Tokens.font.family.clock
+            font.weight: 650
         }
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            Layout.topMargin: Tokens.spacing.extraSmall
             text: "•"
             color: Colours.palette.m3tertiary
-            font: Tokens.font.clock.size(16).weight(Font.DemiBold).build()
+            font.pointSize: 15
+            font.family: Tokens.font.family.clock
+            font.weight: 650
         }
 
-        StyledRect {
+        Rectangle {
             Layout.alignment: Qt.AlignHCenter
-            Layout.topMargin: -Tokens.spacing.extraSmall
-            implicitWidth: secondsText.implicitWidth + Tokens.padding.medium
-            implicitHeight: secondsText.implicitHeight + Tokens.padding.extraSmall
+            Layout.topMargin: -2
+            Layout.preferredWidth: secondsText.implicitWidth + 18
+            Layout.minimumWidth: secondsText.implicitWidth + 18
+            Layout.maximumWidth: secondsText.implicitWidth + 18
+            Layout.preferredHeight: secondsText.implicitHeight + 5
+            Layout.minimumHeight: secondsText.implicitHeight + 5
+            Layout.maximumHeight: secondsText.implicitHeight + 5
+
             radius: height / 2
             color: Colours.palette.m3tertiary
 
@@ -64,14 +77,16 @@ Item {
                 anchors.centerIn: parent
                 text: Time.format("ss")
                 color: Colours.palette.m3onTertiary
-                font: Tokens.font.clock.size(12).weight(Font.Bold).build()
+                font.pointSize: 12
+                font.family: Tokens.font.family.clock
+                font.weight: 450
             }
         }
 
         Loader {
             asynchronous: true
             Layout.alignment: Qt.AlignHCenter
-            Layout.topMargin: Tokens.spacing.extraSmall
+            Layout.topMargin: Tokens.spacing.small
 
             active: GlobalConfig.services.useTwelveHourClock
             visible: active
@@ -79,7 +94,9 @@ Item {
             sourceComponent: StyledText {
                 text: Time.amPmStr
                 color: Colours.palette.m3primary
-                font: Tokens.font.clock.size(18).weight(Font.DemiBold).build()
+                font.pointSize: Tokens.font.size.small
+                font.family: Tokens.font.family.clock
+                font.weight: 650
             }
         }
     }
