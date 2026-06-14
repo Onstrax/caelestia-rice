@@ -125,6 +125,13 @@ ColumnLayout {
                 }
             }
             DelegateChoice {
+                roleValue: "runcat"
+                delegate: WrappedLoader {
+                    visible: !root.fullscreen
+                    sourceComponent: RunCat {}
+                }
+            }
+            DelegateChoice {
                 roleValue: "workspaces"
                 delegate: WrappedLoader {
                     sourceComponent: Workspaces {
