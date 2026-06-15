@@ -15,7 +15,7 @@ Item {
     readonly property var frames: ["\uE900", "\uE901", "\uE902", "\uE903", "\uE904"]
     readonly property int fpsLow: 6
     readonly property int fpsHigh: 90
-    readonly property real fps: fpsLow + (fpsHigh - fpsLow) * cpu
+    readonly property real fps: fpsLow + (fpsHigh - fpsLow) * cpu * 0.3
     readonly property int frameDuration: Math.max(16, Math.round(1000 / fps))
 
     property int frame: 0
@@ -37,7 +37,7 @@ Item {
         id: cat
 
         anchors.centerIn: parent
-        scale: 1.45
+        scale: 1.55
         transformOrigin: Item.Center
         text: root.frames[root.frame]
 
@@ -46,10 +46,10 @@ Item {
 
         font.family: "runcat"
         font.pixelSize: 28
-        font.weight: 400
+        font.weight: 200
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
 
-        opacity: root.cpuPercent >= 90 ? 1 : 0.92
+        opacity: root.cpuPercent >= 60 ? 1 : 0.72
     }
 }

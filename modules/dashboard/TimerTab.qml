@@ -116,7 +116,7 @@ Item {
 
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: qsTr("Duration")
+                        text: qsTr("")
                         color: Colours.palette.m3onSurfaceVariant
                         font: Tokens.font.body.medium
                     }
