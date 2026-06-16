@@ -22,6 +22,7 @@ CustomMouseArea {
     property bool dashboardShortcutActive
     property bool osdShortcutActive
     property bool utilitiesShortcutActive
+    property int hoverOpenDelayMs: 500
 
     function withinPanelHeight(panel: Item, x: real, y: real): bool {
         const panelY = root.borderThickness + panel.y;
@@ -51,6 +52,42 @@ CustomMouseArea {
         return y > height - Math.max(Config.border.minThickness, Config.border.thickness + panelHeight) - (isCorner ? Config.border.rounding : 0) && withinPanelWidth(panel, x, y);
     }
 
+    Timer {
+        id: launcherHoverTimer
+        // interval: root.hoverOpenDelayMs
+        interval: 700
+        repeat: false
+
+        onTriggered: {
+            if (Config.launcher.showOnHover && !root.visibilities.launcher && root.inBottomPanel(root.panels.launcher, root.mouseX, root.mouseY))
+                root.visibilities.launcher = true;
+        }
+    }
+
+    Timer {
+        id: dashboardHoverTimer
+        // interval: root.hoverOpenDelayMs
+        interval: 350
+        repeat: false
+
+        onTriggered: {
+            if (Config.dashboard.showOnHover && !root.dashboardShortcutActive && root.inTopPanel(root.panels.dashboard, root.mouseX, root.mouseY))
+                root.visibilities.dashboard = true;
+        }
+    }
+
+    Timer {
+        id: utilitiesHoverTimer
+        // interval: root.hoverOpenDelayMs
+        interval: 500
+        repeat: false
+
+        onTriggered: {
+            if (!root.utilitiesShortcutActive && root.inBottomPanel(root.panels.utilities, root.mouseX, root.mouseY, true))
+                root.visibilities.utilities = true;
+        }
+    }
+
     function onWheel(event: WheelEvent): void {
         if (fullscreen)
             return;
@@ -66,6 +103,10 @@ CustomMouseArea {
     onPressed: event => dragStart = Qt.point(event.x, event.y)
     onContainsMouseChanged: {
         if (!containsMouse) {
+            launcherHoverTimer.stop();
+            dashboardHoverTimer.stop();
+            utilitiesHoverTimer.stop();
+
             // Only hide if not activated by shortcut
             if (!osdShortcutActive) {
                 visibilities.osd = false;
@@ -172,10 +213,15 @@ CustomMouseArea {
                 visibilities.sidebar = false;
         }
 
-        // Show launcher on hover, or show/hide on drag if hover is disabled
+        // Show launcher on hover after a short delay, or show/hide on drag if hover is disabled
         if (Config.launcher.showOnHover) {
-            if (!visibilities.launcher && inBottomPanel(panels.launcher, x, y))
-                visibilities.launcher = true;
+            const inLauncherArea = inBottomPanel(panels.launcher, x, y);
+            if (!visibilities.launcher && inLauncherArea) {
+                if (!launcherHoverTimer.running)
+                    launcherHoverTimer.restart();
+            } else if (!inLauncherArea) {
+                launcherHoverTimer.stop();
+            }
         } else if (pressed && inBottomPanel(panels.launcher, dragStart.x, dragStart.y) && withinPanelWidth(panels.launcher, x, y)) {
             if (dragY < -Config.launcher.dragThreshold)
                 visibilities.launcher = true;
@@ -183,15 +229,22 @@ CustomMouseArea {
                 visibilities.launcher = false;
         }
 
-        // Show dashboard on hover
+        // Show dashboard on hover after a short delay
         const showDashboard = Config.dashboard.showOnHover && inTopPanel(panels.dashboard, x, y);
 
         // Always update visibility based on hover if not in shortcut mode
         if (!dashboardShortcutActive) {
-            visibilities.dashboard = showDashboard;
+            if (showDashboard) {
+                if (!visibilities.dashboard && !dashboardHoverTimer.running)
+                    dashboardHoverTimer.restart();
+            } else {
+                dashboardHoverTimer.stop();
+                visibilities.dashboard = false;
+            }
         } else if (showDashboard) {
             // If hovering over dashboard area while in shortcut mode, transition to hover control
             dashboardShortcutActive = false;
+            dashboardHoverTimer.stop();
         }
 
         // Show/hide dashboard on drag (for touchscreen devices)
@@ -202,15 +255,22 @@ CustomMouseArea {
                 visibilities.dashboard = false;
         }
 
-        // Show utilities on hover
+        // Show utilities on hover after a short delay
         const showUtilities = inBottomPanel(panels.utilities, x, y, true);
 
         // Always update visibility based on hover if not in shortcut mode
         if (!utilitiesShortcutActive) {
-            visibilities.utilities = showUtilities;
+            if (showUtilities) {
+                if (!visibilities.utilities && !utilitiesHoverTimer.running)
+                    utilitiesHoverTimer.restart();
+            } else {
+                utilitiesHoverTimer.stop();
+                visibilities.utilities = false;
+            }
         } else if (showUtilities) {
             // If hovering over utilities area while in shortcut mode, transition to hover control
             utilitiesShortcutActive = false;
+            utilitiesHoverTimer.stop();
         }
 
         // Show popouts on hover
@@ -227,6 +287,7 @@ CustomMouseArea {
         function onLauncherChanged() {
             // If launcher is hidden, clear shortcut flags for dashboard and OSD
             if (!root.visibilities.launcher) {
+                launcherHoverTimer.stop();
                 root.dashboardShortcutActive = false;
                 root.osdShortcutActive = false;
                 root.utilitiesShortcutActive = false;
@@ -254,6 +315,7 @@ CustomMouseArea {
                 }
             } else {
                 // Dashboard hidden, clear shortcut flag
+                dashboardHoverTimer.stop();
                 root.dashboardShortcutActive = false;
             }
         }
@@ -280,6 +342,7 @@ CustomMouseArea {
                 }
             } else {
                 // Utilities hidden, clear shortcut flag
+                utilitiesHoverTimer.stop();
                 root.utilitiesShortcutActive = false;
             }
         }

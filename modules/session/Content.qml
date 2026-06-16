@@ -18,36 +18,95 @@ Column {
     rightPadding: CUtils.clamp(padding - Config.border.thickness, 0, padding)
     spacing: Tokens.spacing.large
 
+    // SessionButton {
+    //     id: logout
+
+    //     icon: Config.session.icons.logout
+    //     command: Config.session.commands.logout
+
+    //     KeyNavigation.down: shutdown
+
+    //     Component.onCompleted: forceActiveFocus()
+
+    //     Connections {
+    //         function onLauncherChanged(): void {
+    //             if (!root.visibilities.launcher)
+    //                 logout.forceActiveFocus();
+    //         }
+
+    //         target: root.visibilities
+    //     }
+    // }
+
+    // SessionButton {
+    //     id: shutdown
+
+    //     icon: Config.session.icons.shutdown
+    //     command: Config.session.commands.shutdown
+
+    //     KeyNavigation.up: logout
+    //     KeyNavigation.down: hibernate
+    // }
+
+    // AnimatedImage {
+    //     width: Tokens.sizes.session.button
+    //     height: Tokens.sizes.session.button
+    //     sourceSize.width: width * ((QsWindow.window as QsWindow)?.devicePixelRatio ?? 1)
+
+    //     playing: visible
+    //     asynchronous: true
+    //     speed: Config.general.sessionGifSpeed
+    //     source: Paths.absolutePath(Config.paths.sessionGif)
+    //     fillMode: AnimatedImage.PreserveAspectFit
+    // }
+
+    // SessionButton {
+    //     id: hibernate
+
+    //     icon: Config.session.icons.hibernate
+    //     command: Config.session.commands.hibernate
+
+    //     KeyNavigation.up: shutdown
+    //     KeyNavigation.down: reboot
+    // }
+
+    // SessionButton {
+    //     id: reboot
+
+    //     icon: Config.session.icons.reboot
+    //     command: Config.session.commands.reboot
+
+    //     KeyNavigation.up: hibernate
+    // }
+
+    // 1. SUSPEND
     SessionButton {
-        id: logout
-
-        icon: Config.session.icons.logout
-        command: Config.session.commands.logout
-
-        KeyNavigation.down: shutdown
-
+        id: suspendButton
+        icon: "bedtime" // Icono de luna/dormir
+        command: ["bash", "-lc", "hyprlock & sleep 0.3 && systemctl suspend"]
+        KeyNavigation.down: rebootButton
+        
         Component.onCompleted: forceActiveFocus()
-
-        Connections {
-            function onLauncherChanged(): void {
-                if (!root.visibilities.launcher)
-                    logout.forceActiveFocus();
-            }
-
-            target: root.visibilities
-        }
     }
 
+    // 2. REBOOT
     SessionButton {
-        id: shutdown
-
-        icon: Config.session.icons.shutdown
-        command: Config.session.commands.shutdown
-
-        KeyNavigation.up: logout
-        KeyNavigation.down: hibernate
+        id: rebootButton
+        icon: "restart_alt"
+        command: Config.session.commands.reboot
+        KeyNavigation.up: suspendButton
+        KeyNavigation.down: logoutButton
     }
 
+    // El GIF decorativo en medio
+    // AnimatedImage {
+    //     width: Config.session.sizes.button
+    //     height: Config.session.sizes.button
+    //     playing: visible
+    //     asynchronous: true
+    //     speed: Appearance.anim.sessionGifSpeed
+    //     source: Paths.absolutePath(Config.paths.sessionGif)
+    // }
     AnimatedImage {
         width: Tokens.sizes.session.button
         height: Tokens.sizes.session.button
@@ -60,23 +119,21 @@ Column {
         fillMode: AnimatedImage.PreserveAspectFit
     }
 
+    // 3. LOGOUT
     SessionButton {
-        id: hibernate
-
-        icon: Config.session.icons.hibernate
-        command: Config.session.commands.hibernate
-
-        KeyNavigation.up: shutdown
-        KeyNavigation.down: reboot
+        id: logoutButton
+        icon: "logout"
+        command: Config.session.commands.logout
+        KeyNavigation.up: rebootButton
+        KeyNavigation.down: shutdownButton
     }
 
+    // 4. POWER OFF
     SessionButton {
-        id: reboot
-
-        icon: Config.session.icons.reboot
-        command: Config.session.commands.reboot
-
-        KeyNavigation.up: hibernate
+        id: shutdownButton
+        icon: "power_settings_new"
+        command: Config.session.commands.shutdown
+        KeyNavigation.up: logoutButton
     }
 
     component SessionButton: IconButton {
