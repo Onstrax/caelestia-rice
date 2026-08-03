@@ -26,7 +26,7 @@ ShellRoot {
     ConfigToasts {}
     Shortcuts {}
     BatteryMonitor {}
-    IdleMonitors {
-        lock: lock
-    }
+    // IdleMonitors {
+    //     lock: lock
+    // }
 }
