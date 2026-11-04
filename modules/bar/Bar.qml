@@ -128,6 +128,14 @@ ColumnLayout {
                 }
             }
             DelegateChoice {
+                roleValue: "runcat"
+                delegate: EntryWrapper {
+                    RunCat {
+                        visible: !root.fullscreen
+                    }
+                }
+            }
+            DelegateChoice {
                 roleValue: "workspaces"
                 delegate: EntryWrapper {
                     Workspaces {

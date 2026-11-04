@@ -4,3 +4,7 @@
 build/
 .cache/
 logs
+/lib/
+/etc/
+/Caelestia
+/plugin/src/Caelestia/I18n/trs/raw.pot

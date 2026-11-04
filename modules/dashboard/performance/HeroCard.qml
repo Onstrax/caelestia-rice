@@ -24,6 +24,28 @@ StyledRect {
     implicitWidth: Tokens.sizes.dashboard.perfHeroCardWidth
     implicitHeight: Math.max(tempProg.implicitHeight + detailsRow.implicitHeight + Tokens.spacing.large, usageShape.implicitHeight + usageLabel.implicitHeight) + Tokens.padding.large * 2
 
+    // RICE: CPU/GPU background fill left-to-right
+    // El relleno está debajo de toda la información de HeroCard.
+    property real riceFillFraction: isNaN(root.usage) ? 0 : Math.max(0, Math.min(1, root.usage))
+
+    Behavior on riceFillFraction {
+        Anim {}
+    }
+
+    ClipRect {
+        anchors.fill: parent
+        radius: root.radius
+        color: "transparent"
+
+        Rectangle {
+            anchors.left: parent.left
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: parent.width * root.riceFillFraction
+            color: Qt.alpha(root.accent, 0.38)
+        }
+    }
+
     CircularProgress {
         id: tempProg
 

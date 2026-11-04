@@ -13,6 +13,7 @@ import qs.modules.background
 import qs.modules.drawers
 import qs.modules.lock
 import qs.daemons
+import "."
 
 ShellRoot {
     id: root

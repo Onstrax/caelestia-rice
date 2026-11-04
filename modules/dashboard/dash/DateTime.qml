@@ -23,14 +23,14 @@ Item {
         StyledText {
             Layout.bottomMargin: -(font.pointSize * 0.4)
             Layout.alignment: Qt.AlignHCenter
-            text: Time.hourStr
+            text: Time.format("HH")
             color: Colours.palette.m3secondary
             font: Tokens.font.clock.size(28).weight(Font.DemiBold).build()
         }
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            text: "•••"
+            text: "••"
             color: Colours.palette.m3primary
             font: Tokens.font.clock.size(28 * 0.9).build()
         }
@@ -43,44 +43,29 @@ Item {
             font: Tokens.font.clock.size(28).weight(Font.DemiBold).build()
         }
 
-        Loader {
-            Layout.topMargin: -(((item as StyledText)?.font.pointSize ?? 0) * 0.4)
+        StyledText {
             Layout.alignment: Qt.AlignHCenter
-            asynchronous: true
-            active: Config.dashboard.showClockSeconds
-            visible: active
-
-            sourceComponent: StyledText {
-                text: "•••"
-                color: Colours.palette.m3primary
-                font: Tokens.font.clock.size(28 * 0.9).build()
-            }
+            text: "•"
+            color: Colours.palette.m3tertiary
+            font: Tokens.font.clock.size(15).build()
         }
-        Loader {
-            Layout.topMargin: -(((item as StyledText)?.font.pointSize ?? 0) * 0.4)
-            Layout.alignment: Qt.AlignHCenter
-            asynchronous: true
-            active: Config.dashboard.showClockSeconds
-            visible: active
 
-            sourceComponent: StyledText {
+        Rectangle {
+            objectName: "riceSecondsCapsule"
+            Layout.alignment: Qt.AlignHCenter
+            Layout.topMargin: -2
+            Layout.preferredWidth: secondsText.implicitWidth + 18
+            Layout.preferredHeight: secondsText.implicitHeight + 5
+
+            radius: height / 2
+            color: Colours.palette.m3tertiary
+
+            StyledText {
+                id: secondsText
+                anchors.centerIn: parent
                 text: Time.format("ss")
-                color: Colours.palette.m3secondary
-                font: Tokens.font.clock.size(28).weight(Font.DemiBold).build()
-            }
-        }
-
-        Loader {
-            asynchronous: true
-            Layout.alignment: Qt.AlignHCenter
-
-            active: Units.twelveHourClock
-            visible: active
-
-            sourceComponent: StyledText {
-                text: Time.amPmStr
-                color: Colours.palette.m3primary
-                font: Tokens.font.clock.size(18).weight(Font.DemiBold).build()
+                color: Colours.palette.m3onTertiary
+                font: Tokens.font.clock.size(12).build()
             }
         }
     }

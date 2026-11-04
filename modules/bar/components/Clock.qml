@@ -81,7 +81,7 @@ StyledRect {
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            text: Time.hourStr
+            text: Time.format("HH")
             font: root.fontFor(text, hourMetrics.width)
             color: root.colour
 
@@ -89,14 +89,14 @@ StyledRect {
                 id: hourMetrics
 
                 font: root.font.build()
-                text: Time.hourStr
+                text: Time.format("HH")
             }
         }
 
         StyledText {
             Layout.topMargin: -parent.spacing - 4
             Layout.alignment: Qt.AlignHCenter
-            text: Time.minuteStr
+            text: Time.format("mm")
             font: root.fontFor(text, minMetrics.width)
             color: root.colour
 
@@ -104,7 +104,7 @@ StyledRect {
                 id: minMetrics
 
                 font: root.font.build()
-                text: Time.minuteStr
+                text: Time.format("mm")
             }
         }
 
@@ -133,7 +133,7 @@ StyledRect {
             Layout.topMargin: -parent.spacing - 4
             Layout.alignment: Qt.AlignHCenter
             asynchronous: true
-            active: Units.twelveHourClock
+            active: false
             visible: active
 
             sourceComponent: StyledText {

@@ -19,34 +19,28 @@ Column {
     rightPadding: CUtils.clamp(padding - Config.border.thickness, 0, padding)
     spacing: Tokens.spacing.large
 
+    // RICE: suspend uses the existing, tested Caelestia lock-and-suspend helper.
     SessionButton {
-        id: logout
-
-        icon: Config.session.icons.logout
-        command: Config.session.commands.logout
-
-        KeyNavigation.down: shutdown
-
+        id: riceSuspend
+        icon: "bedtime"
+        command: ["bash", "-lc", "exec \"$HOME/.config/caelestia/scripts/lock_and_suspend.sh\""]
+        KeyNavigation.down: riceReboot
         Component.onCompleted: forceActiveFocus()
-
         Connections {
             function onLauncherChanged(): void {
                 if (!root.screenState.launcher)
-                    logout.forceActiveFocus();
+                    riceSuspend.forceActiveFocus();
             }
-
             target: root.screenState
         }
     }
 
     SessionButton {
-        id: shutdown
-
-        icon: Config.session.icons.shutdown
-        command: Config.session.commands.shutdown
-
-        KeyNavigation.up: logout
-        KeyNavigation.down: hibernate
+        id: riceReboot
+        icon: Config.session.icons.reboot
+        command: Config.session.commands.reboot
+        KeyNavigation.up: riceSuspend
+        KeyNavigation.down: riceLogout
     }
 
     Loader {
@@ -66,22 +60,18 @@ Column {
     }
 
     SessionButton {
-        id: hibernate
-
-        icon: Config.session.icons.hibernate
-        command: Config.session.commands.hibernate
-
-        KeyNavigation.up: shutdown
-        KeyNavigation.down: reboot
+        id: riceLogout
+        icon: Config.session.icons.logout
+        command: Config.session.commands.logout
+        KeyNavigation.up: riceReboot
+        KeyNavigation.down: riceShutdown
     }
 
     SessionButton {
-        id: reboot
-
-        icon: Config.session.icons.reboot
-        command: Config.session.commands.reboot
-
-        KeyNavigation.up: hibernate
+        id: riceShutdown
+        icon: Config.session.icons.shutdown
+        command: Config.session.commands.shutdown
+        KeyNavigation.up: riceLogout
     }
 
     component SessionButton: IconButton {

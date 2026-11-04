@@ -52,6 +52,37 @@ CustomMouseArea {
         return y > height - Math.max(Config.border.minThickness, Config.border.thickness + panelHeight) - (isCorner ? Config.border.rounding : 0) && withinPanelWidth(panel, x, y);
     }
 
+    // RICE: delayed opening only; close behavior stays native.
+    Timer {
+        id: riceLauncherHoverTimer
+        interval: 700
+        repeat: false
+        onTriggered: {
+            if (Config.launcher.showOnHover && !root.screenState.launcher && root.inBottomPanel(root.panels.launcher, root.mouseX, root.mouseY))
+                root.screenState.launcher = true;
+        }
+    }
+
+    Timer {
+        id: riceDashboardHoverTimer
+        interval: 350
+        repeat: false
+        onTriggered: {
+            if (Config.dashboard.showOnHover && !root.dashboardShortcutActive && !root.screenState.dashboard && root.inTopPanel(root.panels.dashboard, root.mouseX, root.mouseY))
+                root.screenState.dashboard = true;
+        }
+    }
+
+    Timer {
+        id: riceUtilitiesHoverTimer
+        interval: 500
+        repeat: false
+        onTriggered: {
+            if (!root.utilitiesShortcutActive && !root.screenState.utilities && root.inBottomPanel(root.panels.utilities, root.mouseX, root.mouseY, true))
+                root.screenState.utilities = true;
+        }
+    }
+
     function onWheel(event: WheelEvent): void {
         if (fullscreen)
             return;
@@ -67,6 +98,9 @@ CustomMouseArea {
     onPressed: event => dragStart = Qt.point(event.x, event.y)
     onContainsMouseChanged: {
         if (!containsMouse) {
+            riceLauncherHoverTimer.stop();
+            riceDashboardHoverTimer.stop();
+            riceUtilitiesHoverTimer.stop();
             // Only hide if not activated by shortcut
             if (!osdShortcutActive) {
                 screenState.osd = false;
@@ -202,8 +236,13 @@ CustomMouseArea {
 
         // Show launcher on hover, or show/hide on drag if hover is disabled
         if (Config.launcher.showOnHover) {
-            if (!screenState.launcher && inBottomPanel(panels.launcher, x, y))
-                screenState.launcher = true;
+            const overLauncher = inBottomPanel(panels.launcher, x, y);
+            if (!screenState.launcher && overLauncher) {
+                if (!riceLauncherHoverTimer.running)
+                    riceLauncherHoverTimer.start();
+            } else if (!overLauncher) {
+                riceLauncherHoverTimer.stop();
+            }
         } else if (pressed && inBottomPanel(panels.launcher, dragStart.x, dragStart.y) && withinPanelWidth(panels.launcher, x, y)) {
             if (dragY < -Config.launcher.dragThreshold)
                 screenState.launcher = true;
@@ -214,12 +253,18 @@ CustomMouseArea {
         // Show dashboard on hover
         const showDashboard = Config.dashboard.showOnHover && inTopPanel(panels.dashboard, x, y);
 
-        // Always update visibility based on hover if not in shortcut mode
+        // Delayed opening; immediate closing, preserving shortcut behavior.
         if (!dashboardShortcutActive) {
-            screenState.dashboard = showDashboard;
+            if (showDashboard) {
+                if (!screenState.dashboard && !riceDashboardHoverTimer.running)
+                    riceDashboardHoverTimer.start();
+            } else {
+                riceDashboardHoverTimer.stop();
+                screenState.dashboard = false;
+            }
         } else if (showDashboard) {
-            // If hovering over dashboard area while in shortcut mode, transition to hover control
             dashboardShortcutActive = false;
+            riceDashboardHoverTimer.stop();
         }
 
         // Show/hide dashboard on drag (for touchscreen devices)
@@ -233,12 +278,18 @@ CustomMouseArea {
         // Show utilities on hover
         const showUtilities = inBottomPanel(panels.utilities, x, y, true);
 
-        // Always update visibility based on hover if not in shortcut mode
+        // Delayed opening; immediate closing, preserving shortcut behavior.
         if (!utilitiesShortcutActive) {
-            screenState.utilities = showUtilities;
+            if (showUtilities) {
+                if (!screenState.utilities && !riceUtilitiesHoverTimer.running)
+                    riceUtilitiesHoverTimer.start();
+            } else {
+                riceUtilitiesHoverTimer.stop();
+                screenState.utilities = false;
+            }
         } else if (showUtilities) {
-            // If hovering over utilities area while in shortcut mode, transition to hover control
             utilitiesShortcutActive = false;
+            riceUtilitiesHoverTimer.stop();
         }
 
         // Show popouts on hover
@@ -253,6 +304,7 @@ CustomMouseArea {
     // Monitor individual visibility changes
     Connections {
         function onLauncherChanged() {
+            if (!root.screenState.launcher) riceLauncherHoverTimer.stop();
             // If launcher is hidden, clear shortcut flags for dashboard and OSD
             if (!root.screenState.launcher) {
                 root.dashboardShortcutActive = false;
@@ -275,6 +327,7 @@ CustomMouseArea {
         }
 
         function onDashboardChanged() {
+            if (!root.screenState.dashboard) riceDashboardHoverTimer.stop();
             if (root.screenState.dashboard) {
                 // Dashboard became visible, immediately check if this should be shortcut mode
                 const inDashboardArea = root.inTopPanel(root.panels.dashboard, root.mouseX, root.mouseY);
@@ -301,6 +354,7 @@ CustomMouseArea {
         }
 
         function onUtilitiesChanged() {
+            if (!root.screenState.utilities) riceUtilitiesHoverTimer.stop();
             if (root.screenState.utilities) {
                 // Utilities became visible, immediately check if this should be shortcut mode
                 const inUtilitiesArea = root.inBottomPanel(root.panels.utilities, root.mouseX, root.mouseY);
