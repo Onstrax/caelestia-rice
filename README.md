@@ -1,3 +1,14 @@
+> **Instalación personal de Juanes — documentación adicional**
+>
+> Este repositorio se utiliza como fuente canónica de QML en la rama `juanes-rice` de [Onstrax/caelestia-rice](https://github.com/Onstrax/caelestia-rice). Complementa el repositorio [Onstrax/dotfiles-rice](https://github.com/Onstrax/dotfiles-rice), rama `main`, que contiene Hyprland Lua, Fish, scripts, teclado y autostart.
+>
+> Para las personalizaciones locales, consulte [docs/CUSTOMIZATIONS.md](docs/CUSTOMIZATIONS.md); para integrar cambios oficiales, [docs/UPDATING.md](docs/UPDATING.md). **No ejecutar `git pull upstream main` indiscriminadamente sobre `juanes-rice`**.
+>
+> La documentación original upstream se mantiene íntegra a continuación; sus instrucciones de instalación genéricas deben contrastarse con la configuración personal.
+
+---
+
+
 <h1 align=center>caelestia-shell</h1>
 
 <div align=center>
